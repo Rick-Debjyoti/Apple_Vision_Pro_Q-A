@@ -1,0 +1,9 @@
+langchain
+transformers
+pinecone-client
+streamlit
+openai
+pdfplumber
+beautifulsoup4
+youtube-transcript-api
+python-dotenv
