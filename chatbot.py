@@ -19,19 +19,14 @@ index_name = "apple-vision-pro"
 
 index = pc.Index(index_name)
 
-# Initialize OpenAI with Langchain
-llm = OpenAI(api_key=openai_api_key, model="gpt-3.5-turbo")
-
 # Initialize Langchain with Pinecone and OpenAI
-embeddings_model = HuggingFaceEmbeddings()
+embeddings_model = HuggingFaceEmbeddings(model_name="sentence-transformers/paraphrase-MiniLM-L6-v2")
 docsearch = PineconeVectorStore.from_existing_index(index_name, embeddings_model)
 retriever = docsearch.as_retriever()
 
 # Create the RetrievalQA chain
-chain = RetrievalQA.from_chain_type(
-    retriever=retriever,
-    llm=llm
-)
+chain = RetrievalQA.from_llm(llm=OpenAI(openai_api_key=openai_api_key), retriever=retriever)
+
 
 def get_response(query):
     return chain.run(query)
@@ -43,5 +38,4 @@ def get_sales_response(query, user_persona=None):
         prompt += f" Consider the user’s persona: {user_persona}"
     
     # Use Langchain's OpenAI for sales response
-    response = llm(prompt)
-    return response
+    return chain.run(prompt)

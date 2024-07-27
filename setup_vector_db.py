@@ -35,8 +35,10 @@ def embed_text(text):
     return embeddings
 
 def chunk_text(text, chunk_size=512):
-    tokens = tokenizer.encode(text, truncation=True, max_length=chunk_size)
-    return [tokens[i:i + chunk_size] for i in range(0, len(tokens), chunk_size)]
+    tokens = tokenizer.encode(text, add_special_tokens=False)
+    chunks = [tokens[i:i + chunk_size] for i in range(0, len(tokens), chunk_size)]
+    return chunks
+
 
 # Read and combine extracted text data
 files = ["extracted_text.txt", "web_scraped_text.txt", "youtube_transcript.txt"]
@@ -53,7 +55,8 @@ chunks = chunk_text(combined_text, chunk_size=512)
 for i, chunk in enumerate(chunks):
     chunk_text = tokenizer.decode(chunk, skip_special_tokens=True)
     embeddings = embed_text(chunk_text)
-    index.upsert([(str(i), embeddings)])
+    metadata = {"chunk": i, "text": chunk_text}  
+    index.upsert([(str(i), embeddings, metadata)])
 
 print("Data has been successfully embedded and uploaded to Pinecone.")
 
