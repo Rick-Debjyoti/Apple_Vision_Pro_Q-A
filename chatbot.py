@@ -6,11 +6,15 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
 from transformers import AutoTokenizer, AutoModel
+import streamlit as st
 
 # Load environment variables
-load_dotenv()
-openai_api_key = os.getenv("OPENAI_API_KEY")
-pinecone_api_key = os.getenv("PINECONE_API_KEY")
+# load_dotenv()
+# openai_api_key = os.getenv("OPENAI_API_KEY")
+# pinecone_api_key = os.getenv("PINECONE_API_KEY")
+
+openai_api_key = st.secrets["OPENAI_API_KEY"]
+pinecone_api_key = st.secrets["PINECONE_API_KEY"]
 
 
 # Initialize Pinecone
